@@ -1,34 +1,42 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY
-const supabaseClient = createClient(supabaseUrl, supabaseKey)
+const supabaseClient = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_API_KEY)
 
-const UserService = {
-    insertUser : async function insertUser(name) {
-    const {user} = authUser()
-    const {error: dbError} = await supabaseClient
-        .from('users')
-        .insert([{name: name}])
+class UserService {
+    async registerUser({name, email, password}) {
+        const { data: authData, error: authError } = await this.#authUser({ email, password })
+        if (authError) return { error: authError }
 
-        if(dbError) {
-            console.error(dbError)
+        const { data: insertData, error: insertError } = await this.#insertUser({ name })
+        if (insertError) return { error: insertError }
+
+        return { data: { authData, insertData }, error: null }
+    }
+    
+    async #authUser({email, password}) {
+        try {
+                const {data, error} = await supabaseClient.auth.signUp({
+                email: email, 
+                password: password
+            })
+            return {data, error}
+        } catch (error) {
+            console.error(error);
+            return {data: null, error}
+        }
+    }
+
+    async #insertUser({name}) {
+        try {
+            const {data, error} = await supabaseClient.from('users').insert([
+            {name: name}
+        ])
+        return {data, error}
+        } catch (error) {
+            console.error(error)
+            return {data: null, error}
         }
     }
 }
 
-async function authUser(){
-    const {data:authData, error:authError} = await supabaseClient.auth.signUp({
-    email:"ggezcom991gh@gmail.com", 
-    password: "MinhaSenha"
-    })
-
-    if(authError) {
-    console.log(authError)
-    return
-    }
-
-    return authData
-}
-
-export {UserService, supabaseClient}
+export {UserService}

@@ -1,5 +1,5 @@
 import React, { use, useEffect, useState } from 'react'
-import { supabaseClient } from '../../utils/API/supabaseAPI'
+// import { supabaseClient } from '../../utils/API/supabaseAPI'
 import displaySprite from '../../utils/drawingSprites/drawImage'
 
 export default function Assets({filename}) {
