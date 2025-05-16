@@ -5,11 +5,11 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY
 const supabaseClient = createClient(supabaseUrl, supabaseKey)
 
 const UserService = {
-    insertUser : async function insertUser(name,password) {
+    insertUser : async function insertUser(name) {
     const {user} = authUser()
     const {error: dbError} = await supabaseClient
         .from('users')
-        .insert([{name: name,user_password:password}])
+        .insert([{name: name}])
 
         if(dbError) {
             console.error(dbError)
