@@ -1,30 +1,48 @@
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('Erro ao carregar a imagem.'));
-    img.src = src;
-  });
-}
+import { supabaseClient } from "../API/supabaseAPI";
+class DrawSprites {
+  async #fetchSpriteURL(spriteURL) {
+    const { data, error } = await supabaseClient
+      .storage
+      .from('sprites')
+      .createSignedUrl(spriteURL, 60);
 
-function drawImageOnCanvas(img, canvasId) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext('2d');
-  canvas.width = img.width;
-  canvas.height = img.height;
+    if (error) {
+      console.error('Erro ao gerar URL:', error);
+      throw new Error('Erro ao gerar URL');
+    }
 
-  ctx.drawImage(img, 0, 0);
-}
+    return data.signedUrl;
+  }
 
-async function displaySprite(signedUrl, canvasId)
-{
-  try {
-    const img = await loadImage(signedUrl);
-    drawImageOnCanvas(img, canvasId);
-  } catch (err) {
-    console.error(err.message);
+  #loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Erro ao carregar a imagem.'));
+      img.src = src;
+    })
+  }
+
+  #drawImageOnCanvas(img, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    ctx.drawImage(img, 0, 0);
+  }
+
+  async displaySprite(spriteURL, canvasId)
+  {
+    try {
+      const url = await this.#fetchSpriteURL(spriteURL);
+      const img = await this.#loadImage(url);
+      this.#drawImageOnCanvas(img, canvasId);
+    } catch (err) {
+      console.error(err.message);
+    }
   }
 }
 
-export default displaySprite;
+export default DrawSprites;

@@ -39,4 +39,4 @@ class UserService {
     }
 }
 
-export {UserService}
+export {UserService, supabaseClient}
