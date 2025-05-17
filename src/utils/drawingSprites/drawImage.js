@@ -1,4 +1,6 @@
 import { supabaseClient } from "../API/supabaseAPI";
+import currentCache from "./cache";
+
 class DrawSprites {
   async #fetchSpriteURL(spriteURL) {
     const { data, error } = await supabaseClient
@@ -14,14 +16,22 @@ class DrawSprites {
     return data.signedUrl;
   }
 
-  #loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('Erro ao carregar a imagem.'));
-      img.src = src;
+  async #loadImage(url) {
+    const name = url.split('/').pop();
+    if (currentCache.has(name)) {
+      return currentCache.get(name)
+    }
+
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image();
+      i.crossOrigin = 'anonymous';
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error('Erro ao carregar a imagem.'));
+      i.src = url;
     })
+
+    currentCache.set(name, img);
+    return img;
   }
 
   #drawImageOnCanvas(img, canvasId) {
