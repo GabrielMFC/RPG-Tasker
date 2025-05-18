@@ -25,26 +25,15 @@ export default function LoginPage() {
         }
     }
 
-    useEffect(() => {
-        async function DrawSprite() {
-            const drawSprite = new DrawSprites()
-            drawSprite.displaySprite("Medievil Banner SPRITESHEET.png", "canvasId")
-        }
-
-        DrawSprite()
-    }, [])
-
     return (
-        <div>
-            <h1>Login Page</h1>
-            <form onSubmit={registerUSer}>
-                <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Nome de usuário..."/>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email..." required />
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha..." required />
-                <button type="submit">Login</button>
-            </form>
-            <canvas className="
-            sprite" id="canvasId"></canvas>
+        <div id="container">
+                <h1>Login Page</h1>
+                <form id="loginForm" onSubmit={registerUSer}>
+                    <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Nome de usuário..."/>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email..." required />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha..." required />
+                    <button type="submit">Login</button>
+                </form>
         </div>
     )
 }

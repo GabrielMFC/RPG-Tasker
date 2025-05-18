@@ -1,20 +1,10 @@
-:root {
-  --sprite-url: url('');
+#container{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
 }
-.sprite{
-    width: 512px;
-    height: 512px;
-    display: block;
-    background-size: 800% 800%;
-    background-image: var(--sprite-url);
-    overflow: hidden;
-    image-rendering: pixelated;
-    background-position: 0% 0%;
-    animation: animacao 1s steps(8) infinite;
-}
-
-@keyframes animacao {
-    100%{
-        background-position: -800% 0%;
-    }
+#loginForm{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
