@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import {UserService} from "../../utils/API/supabaseAPI"
 import DrawSprites from "../../utils/drawingSprites/drawImage"
+import "./index.css"
 
 export default function LoginPage() {
     const [userName, setUserName] = useState("")
@@ -19,7 +20,7 @@ export default function LoginPage() {
             }
 
         } catch (error) {
-            console.error(error);
+            console.error(error)
             return {data: null, error}
         }
     }
@@ -42,7 +43,8 @@ export default function LoginPage() {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Senha..." required />
                 <button type="submit">Login</button>
             </form>
-            <canvas id="canvasId"></canvas>
+            <canvas className="
+            sprite" id="canvasId"></canvas>
         </div>
     )
 }

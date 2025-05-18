@@ -1,5 +1,5 @@
 import { supabaseClient } from "../API/supabaseAPI";
-import currentCache from "./cache";
+import spriteCache from "../cache/cacheManager";
 
 class DrawSprites {
   async #fetchSpriteURL(spriteURL) {
@@ -17,10 +17,9 @@ class DrawSprites {
   }
 
   async #loadImage(url) {
-    const name = url.split('/').pop();
-    if (currentCache.has(name)) {
-      return currentCache.get(name)
-    }
+    const name = new URL(url).pathname.split('/').pop()
+
+    spriteCache.get(name)
 
     const img = await new Promise((resolve, reject) => {
       const i = new Image();
@@ -30,7 +29,7 @@ class DrawSprites {
       i.src = url;
     })
 
-    currentCache.set(name, img);
+    spriteCache.set(name, img)
     return img;
   }
 

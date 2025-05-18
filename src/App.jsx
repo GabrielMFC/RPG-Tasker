@@ -1,5 +1,5 @@
 import ToDoList from "./components/ToDoList/ToDoList"
-import Assets from "./components/TesteDeAssets/assets"
+// import Assets from "./components/TesteDeAssets/assets"
 import LoginPage from "./components/LoginPage/LoginPage"
 import { UserService } from "./utils/API/supabaseAPI"
 
