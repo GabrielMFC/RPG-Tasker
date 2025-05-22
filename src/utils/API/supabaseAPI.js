@@ -1,41 +1,72 @@
 import { createClient } from '@supabase/supabase-js'
+import bcrypt from 'bcryptjs'
 
 const supabaseClient = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_API_KEY)
 
 class UserService {
-    async registerUser({name, email, password}) {
-        const { data: authData, error: authError } = await this.#authUser({ email, password })
-        if (authError) return { error: authError }
+    async #findUser(name) {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .select('user_id, name, user_password')
+            .eq('name', name)
+            .single()
 
-        const { data: insertData, error: insertError } = await this.#insertUser({ name })
-        if (insertError) return { error: insertError }
-
-        return { data: { authData, insertData }, error: null }
-    }
-    
-    async #authUser({email, password}) {
-        try {
-                const {data, error} = await supabaseClient.auth.signUp({
-                email: email, 
-                password: password
-            })
-            return {data, error}
-        } catch (error) {
-            console.error(error);
-            return {data: null, error}
+        if (error || !data) {
+            return { error: 'Usuário não encontrado', data: null }
         }
+
+        return { data, error: null }
     }
 
-    async #insertUser({name}) {
+    async #validateCredentials(name, password) {
+        const { data, error } = await this.#findUser(name)
+
+        if (error) return { error }
+
+        const isValidPassword = await bcrypt.compare(password, data.user_password)
+
+        if (!isValidPassword) {
+            return { error: 'Senha incorreta' }
+        }
+
+        return { data, error: null }
+    }
+
+    async registerUser({ name, password }) {
+        const { data, error } = await this.#insertUser({ name, password })
+        if (error) return { error }
+
+        return { data }
+    }
+
+    async login({ name, password }) {
+        const { data, error } = await this.#validateCredentials(name, password)
+
+        if (error) {
+            return { error }
+        }
+        console.log("deu certo");
+        
+        return { data }
+    }
+
+    async #insertUser({name, password}) {
         try {
-            const {data, error} = await supabaseClient.from('users').insert([
-            {name: name}
+            const {data, error} = await 
+            supabaseClient.from('users').insert([
+            {name: name, user_password: await this.#generateHash(password)}  
         ])
         return {data, error}
         } catch (error) {
             console.error(error)
             return {data: null, error}
         }
+    }
+
+    async #generateHash(password) {
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(password, salt)
+        return hash
     }
 }
 
