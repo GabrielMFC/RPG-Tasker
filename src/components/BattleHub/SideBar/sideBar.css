@@ -1,0 +1,11 @@
+#sideBarcontainer {
+  width: 600px;
+  min-width: 100px; /* ou 200px */
+  max-width: 1200px;
+  height: 100vh;
+  background-color: blue;
+  resize: horizontal;
+  overflow: auto;
+  display: block;
+  border-right: 15px solid black;
+}

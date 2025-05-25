@@ -1,15 +1,12 @@
-import ToDoList from "./components/ToDoList/ToDoList"
-// import Assets from "./components/TesteDeAssets/assets"
-import LoginPage from "./components/LoginPage/LoginPage"
-import { UserService } from "./utils/API/supabaseAPI"
-import ScrollIntro from "./components/LoginPage/scrollIntro/ScrollIntro"
-import { useState } from "react"
+import TavernBackground from "./components/LoginPage/TavernBackground/TavernBackground"
+import BattleHub from "./components/BattleHub/BattleHub"
+import SideBar from "./components/BattleHub/SideBar/SideBar"
 
 function App() {
-  const[showLoginPage, setShowLoginPage] = useState(false)
-
 return (
-  <ScrollIntro/>
+  <>
+  <SideBar/>
+  </>
 )
 }
 
